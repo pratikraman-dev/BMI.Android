@@ -2,9 +2,11 @@ package mathewsachin.bmi;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -21,6 +23,7 @@ import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
     EditText massText, heightText;
+    RadioButton poundRadio, fiRadio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +35,25 @@ public class MainActivity extends AppCompatActivity {
         massText = (EditText) findViewById(R.id.WeightText);
         heightText = (EditText) findViewById(R.id.HeightText);
 
+        poundRadio = (RadioButton) findViewById(R.id.PoundUnit);
+        fiRadio = (RadioButton) findViewById(R.id.fiUnit);
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Solve(view);
+            }
+        });
+
+
         TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener()
         {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_DOWN)
-                    Solve(v.getRootView());
+                if ((actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE)
+                        && event.getAction() == KeyEvent.ACTION_DOWN)
+                    Solve(v);
 
                 return true;
             }
@@ -45,26 +61,23 @@ public class MainActivity extends AppCompatActivity {
 
         massText.setOnEditorActionListener(listener);
         heightText.setOnEditorActionListener(listener);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Solve(view);
-            }
-        });
     }
 
-    private void Solve(View view) {
+    void ShowToast(String Message)
+    {
+        Toast.makeText(MainActivity.this, Message, Toast.LENGTH_SHORT).show();
+    }
+
+    void Solve(View view) {
         if (massText.getText().toString().isEmpty())
         {
-            Toast.makeText(MainActivity.this, "Empty Weight", Toast.LENGTH_SHORT).show();
+            ShowToast("Empty Weight");
             return;
         }
 
         if (heightText.getText().toString().isEmpty())
         {
-            Toast.makeText(MainActivity.this, "Empty Height", Toast.LENGTH_SHORT).show();
+            ShowToast("Empty Height");
             return;
         }
 
@@ -73,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
         try { massInKg = Double.parseDouble(massText.getText().toString()); }
         catch (Exception e)
         {
-            Toast.makeText(MainActivity.this, "Invalid Weight", Toast.LENGTH_SHORT).show();
+            ShowToast("Invalid Weight");
             return;
         }
 
-        if (((RadioButton)findViewById(R.id.PoundUnit)).isChecked())
+        if (poundRadio.isChecked())
             massInKg *= 0.45359237;
 
         String heightString = heightText.getText().toString();
@@ -86,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         try
         {
-            if (((RadioButton) findViewById(R.id.fiUnit)).isChecked()) {
+            if (fiRadio.isChecked()) {
                 if (heightString.indexOf("'") == -1)
                     heightInCm = Integer.parseInt(heightString) * 2.54 * 12;
                 else {
@@ -98,19 +111,19 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (Exception e)
         {
-            Toast.makeText(MainActivity.this, "Invalid Height", Toast.LENGTH_SHORT).show();
+            ShowToast("Invalid Height");
             return;
         }
 
         if (heightInCm <= 0)
         {
-            Toast.makeText(MainActivity.this, "Invalid Height", Toast.LENGTH_SHORT).show();
+            ShowToast("Invalid Height");
             return;
         }
 
         if (massInKg <= 0)
         {
-            Toast.makeText(MainActivity.this, "Invalid Weight", Toast.LENGTH_SHORT).show();
+            ShowToast("Invalid Weight");
             return;
         }
 
@@ -160,8 +173,23 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        if (id == R.id.action_about)
+        {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("About")
+                    .setMessage(R.string.bmi_about)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Do nothing
+                        }
+                    })
+                    .create()
+                    .show();
+
             return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
