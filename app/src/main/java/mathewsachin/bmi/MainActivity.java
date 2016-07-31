@@ -21,12 +21,14 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     EditText massText, heightText;
     RadioButton poundRadio, fiRadio;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -39,18 +41,20 @@ public class MainActivity extends AppCompatActivity {
         fiRadio = (RadioButton) findViewById(R.id.fiUnit);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 Solve(view);
             }
         });
 
-
         TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener()
         {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
                 if ((actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE)
                         && event.getAction() == KeyEvent.ACTION_DOWN)
                     Solve(v);
@@ -68,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, Message, Toast.LENGTH_SHORT).show();
     }
 
-    void Solve(View view) {
+    void Solve(View view)
+    {
         if (massText.getText().toString().isEmpty())
         {
             ShowToast("Empty Weight");
@@ -99,15 +104,18 @@ public class MainActivity extends AppCompatActivity {
 
         try
         {
-            if (fiRadio.isChecked()) {
+            if (fiRadio.isChecked())
+            {
                 if (heightString.indexOf("'") == -1)
                     heightInCm = Integer.parseInt(heightString) * 2.54 * 12;
-                else {
+                else
+                {
                     String[] splitted = heightString.split("'");
                     int[] splittedInts = new int[]{Integer.parseInt(splitted[0]), Integer.parseInt(splitted[1])};
                     heightInCm = (splittedInts[0] * 12 + splittedInts[1]) * 2.54;
                 }
-            } else heightInCm = Double.parseDouble(heightString);
+            }
+            else heightInCm = Double.parseDouble(heightString);
         }
         catch (Exception e)
         {
@@ -131,9 +139,11 @@ public class MainActivity extends AppCompatActivity {
         final String bmiString = new DecimalFormat("#0.00").format(bmi) + " (" + GetRemark(bmi) + ")";
 
         Snackbar.make(view, bmiString, Snackbar.LENGTH_INDEFINITE)
-                .setAction("COPY", new View.OnClickListener(){
+                .setAction("COPY", new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(View view)
+                    {
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("BMI", bmiString);
                         clipboard.setPrimaryClip(clip);
@@ -159,14 +169,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -179,9 +191,11 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("About")
                     .setMessage(R.string.bmi_about)
                     .setIcon(android.R.drawable.ic_dialog_info)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Close", new DialogInterface.OnClickListener()
+                    {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
                             // Do nothing
                         }
                     })
