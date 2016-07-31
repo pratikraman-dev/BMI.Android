@@ -9,14 +9,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
@@ -49,22 +46,6 @@ public class MainActivity extends AppCompatActivity
                 Solve(view);
             }
         });
-
-        TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener()
-        {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-            {
-                if ((actionId == EditorInfo.IME_NULL || actionId == EditorInfo.IME_ACTION_DONE)
-                        && event.getAction() == KeyEvent.ACTION_DOWN)
-                    Solve(v);
-
-                return true;
-            }
-        };
-
-        massText.setOnEditorActionListener(listener);
-        heightText.setOnEditorActionListener(listener);
     }
 
     void ShowToast(String Message)
